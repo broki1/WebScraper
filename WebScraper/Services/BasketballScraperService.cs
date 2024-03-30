@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using WebScraper.Data;
 using WebScraper.Interfaces;
+using WebScraper.Models;
 
 namespace WebScraper.Services;
 
@@ -31,23 +32,33 @@ public class BasketballScraperService : IWebScraperService
         return node.InnerText;
     }
 
-    public void GetGamesPlayed()
+    public List<BasketballGameDTO> GetTeamsAndScores()
     {
         var games = this._document.DocumentNode.SelectNodes("//div[@class='game_summary expanded nohover ']").ToArray();
+        var basketballGames = new List<BasketballGameDTO>();
 
         foreach (var game in games)
         {
             var awayTeam = game.SelectSingleNode("table[@class='teams']//tbody//tr[1]//td[1]//a").InnerText;
             var homeTeam = game.SelectSingleNode("table[@class='teams']//tbody//tr[2]//td[1]//a").InnerText;
 
-            var awayScore = game.SelectSingleNode("table[@class='teams']//tbody//tr[1]//td[2]").InnerText;
-            var homeScore = game.SelectSingleNode("table[@class='teams']//tbody//tr[2]//td[2]").InnerText;
+            var awayScore = Convert.ToInt32(game.SelectSingleNode("table[@class='teams']//tbody//tr[1]//td[2]").InnerText);
+            var homeScore = Convert.ToInt32(game.SelectSingleNode("table[@class='teams']//tbody//tr[2]//td[2]").InnerText);
 
-            Console.WriteLine($"{awayTeam}: {awayScore}");
-            Console.WriteLine("AT");
-            Console.WriteLine($"{homeTeam}: {homeScore}\n");
 
+
+            var basketballGame = new BasketballGameDTO
+            {
+                HomeTeam = homeTeam,
+                AwayTeam = awayTeam,
+                HomeTeamScore = homeScore,
+                AwayTeamScore = awayScore
+            };
+
+            basketballGames.Add(basketballGame);
             // Console.WriteLine(game.InnerHtml);
         }
+
+        return basketballGames;
     }
 }

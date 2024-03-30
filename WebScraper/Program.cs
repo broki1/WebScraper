@@ -22,14 +22,8 @@ internal class Program
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
 
-        var _service = app.Services.GetRequiredService<IWebScraperService>();
 
         app.RunAsync();
-
-        _service.GetGamesPlayed();
-
-
-        Console.WriteLine(_service.GetHeader());
 
         app.StopAsync();
     }
