@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using WebScraper.Data;
 using WebScraper.Interfaces;
+using WebScraper.Repositories;
 using WebScraper.Services;
 
 namespace WebScraper;
@@ -14,6 +15,7 @@ internal class Program
         builder.Services.AddDbContext<WebScraperContext>();
         builder.Services.AddScoped<IWebScraperService, BasketballScraperService>();
         builder.Services.AddScoped<DailyReportController>();
+        builder.Services.AddScoped<IBasketballGameRepository, BasketballGameRepository>();
 
         IHost app = builder.Build();
 
@@ -22,9 +24,7 @@ internal class Program
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
 
-
         app.RunAsync();
-
         app.StopAsync();
     }
 }

@@ -2,40 +2,42 @@
 using WebScraper.Data;
 using WebScraper.Interfaces;
 using WebScraper.Models;
+using WebScraper.Repositories;
 
 namespace WebScraper.Services;
 
 public class BasketballScraperService : IWebScraperService
 {
-    private readonly WebScraperContext _context;
+    private readonly IBasketballGameRepository _basketballGameRepository;
     private readonly string _url;
     private HtmlWeb _web;
     private HtmlDocument _document;
 
-    public BasketballScraperService(WebScraperContext context)
+    public BasketballScraperService(IBasketballGameRepository basketballGameRepository)
     {
-        this._context = context;
         this._url = "https://www.basketball-reference.com/boxscores/";
         this._web = new HtmlWeb();
         this._document = this._web.Load(this._url);
+
+        this._basketballGameRepository = basketballGameRepository;
     }
 
-    public string GetHeader()
-    {
-        var node = this._document.DocumentNode.SelectSingleNode("//html//body//div[@id='wrap']//div[@id='content']//h1");
-        return node.InnerText;
-    }
+    //public string GetHeader()
+    //{
+    //    var node = this._document.DocumentNode.SelectSingleNode("//html//body//div[@id='wrap']//div[@id='content']//h1");
+    //    return node.InnerText;
+    //}
 
-    public string GetNumGamesPlayed()
-    {
-        var node = this._document.DocumentNode.SelectSingleNode("//html//body//div[@id='wrap']//div[@id='content']//div[@class='section_heading']//h2");
-        return node.InnerText;
-    }
+    //public string GetNumGamesPlayed()
+    //{
+    //    var node = this._document.DocumentNode.SelectSingleNode("//html//body//div[@id='wrap']//div[@id='content']//div[@class='section_heading']//h2");
+    //    return node.InnerText;
+    //}
 
-    public List<BasketballGameDTO> GetTeamsAndScores()
+    public void InsertGames()
     {
         var games = this._document.DocumentNode.SelectNodes("//div[@class='game_summary expanded nohover ']").ToArray();
-        var basketballGames = new List<BasketballGameDTO>();
+        var basketballGames = new List<BasketballGame>();
 
         foreach (var game in games)
         {
@@ -47,8 +49,9 @@ public class BasketballScraperService : IWebScraperService
 
 
 
-            var basketballGame = new BasketballGameDTO
+            var basketballGame = new BasketballGame
             {
+                Date = DateTime.Today.AddDays(-1),
                 HomeTeam = homeTeam,
                 AwayTeam = awayTeam,
                 HomeTeamScore = homeScore,
@@ -59,6 +62,6 @@ public class BasketballScraperService : IWebScraperService
             // Console.WriteLine(game.InnerHtml);
         }
 
-        return basketballGames;
+        this._basketballGameRepository.InsertBasketballGames(basketballGames);
     }
 }

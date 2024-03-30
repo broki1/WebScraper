@@ -6,7 +6,7 @@ public class BasketballGame
 {
     [Key]
     public int GameId { get; set; }
-    public DateOnly Date {  get; set; }
+    public DateTime Date {  get; set; }
     public string HomeTeam { get; set; } = null!;
     public string AwayTeam { get; set; } = null!;
     public int HomeTeamScore { get; set; }

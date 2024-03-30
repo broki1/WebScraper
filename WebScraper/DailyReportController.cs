@@ -2,19 +2,11 @@
 
 namespace WebScraper;
 
-internal class DailyReportController
+public class DailyReportController
 {
 
-    private readonly IWebScraperService _service;
-
-    DailyReportController(IWebScraperService service)
+    internal void GenerateDailyReport()
     {
-        _service = service;
-    }
-
-    internal void SendDailyReport()
-    {
-        var header = this._service.GetHeader();
-        var body = this._service.GetNumGamesPlayed();
+        Console.WriteLine("in the controller");
     }
 }
