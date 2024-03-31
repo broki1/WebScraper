@@ -22,18 +22,6 @@ public class BasketballScraperService : IWebScraperService
         this._basketballGameRepository = basketballGameRepository;
     }
 
-    //public string GetHeader()
-    //{
-    //    var node = this._document.DocumentNode.SelectSingleNode("//html//body//div[@id='wrap']//div[@id='content']//h1");
-    //    return node.InnerText;
-    //}
-
-    //public string GetNumGamesPlayed()
-    //{
-    //    var node = this._document.DocumentNode.SelectSingleNode("//html//body//div[@id='wrap']//div[@id='content']//div[@class='section_heading']//h2");
-    //    return node.InnerText;
-    //}
-
     public void InsertGames()
     {
         var games = this._document.DocumentNode.SelectNodes("//div[@class='game_summary expanded nohover ']").ToArray();

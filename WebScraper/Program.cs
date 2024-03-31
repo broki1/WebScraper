@@ -16,6 +16,7 @@ internal class Program
         builder.Services.AddScoped<IWebScraperService, BasketballScraperService>();
         builder.Services.AddScoped<DailyReportController>();
         builder.Services.AddScoped<IBasketballGameRepository, BasketballGameRepository>();
+        builder.Services.AddScoped<IEmailService, BasketballEmailService>();
 
         IHost app = builder.Build();
 
@@ -25,6 +26,11 @@ internal class Program
         _context.Database.EnsureCreated();
 
         app.RunAsync();
+
+        var _controller = app.Services.GetRequiredService<DailyReportController>();
+
+        _controller.ExecuteDailyReportService();
+
         app.StopAsync();
     }
 }
