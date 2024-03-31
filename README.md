@@ -10,3 +10,5 @@
   This information, along with the date the games were played, are included in an email object and sent to target email using SMTP.
   If no games, were played, this fact is sent to the target email instead.
 </p>
+
+<h4>Application is a CRON job that is configured to run at 3:00 AM EST everyday.</h4>
