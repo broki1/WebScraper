@@ -1,8 +1,6 @@
 ﻿using HtmlAgilityPack;
-using WebScraper.Data;
 using WebScraper.Interfaces;
 using WebScraper.Models;
-using WebScraper.Repositories;
 
 namespace WebScraper.Services;
 

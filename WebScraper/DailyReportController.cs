@@ -26,12 +26,16 @@ public class DailyReportController
 
             var emailBody = this._emailService.CreateBody(games);
 
-            Console.WriteLine(emailBody);
+            var email = this._emailService.CreateEmail(emailBody);
+
+            this._emailService.SendEmail(email);
         }
 
         catch (ArgumentNullException ex)
         {
-            Console.WriteLine("No games played today.");
+            var email = this._emailService.CreateEmail("No games were played today.");
+
+            this._emailService.SendEmail(email);
         }
     }
 }
