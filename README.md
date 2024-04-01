@@ -11,4 +11,4 @@
   If no games, were played, this fact is sent to the target email instead.
 </p>
 
-<h4>Application is a CRON job that is configured to run at 3:00 AM EST everyday.</h4>
+<h4>Application is then configured using Windows Task Scheduler to run at 3:00 AM EST everyday.</h4>
