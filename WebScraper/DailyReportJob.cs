@@ -23,7 +23,7 @@ public class DailyReportJob : IJob
         {
             this._service.InsertGames();
 
-            var games = this._context.BasketballGames.ToList();
+            var games = this._context.BasketballGames.Where(game => game.Date == DateTime.Today.AddDays(-1)).ToList();
 
             var emailBody = this._emailService.CreateBody(games);
 
