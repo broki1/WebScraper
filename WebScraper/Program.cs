@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Quartz;
 using WebScraper.Data;
 using WebScraper.Interfaces;
 using WebScraper.Repositories;
@@ -9,14 +10,20 @@ namespace WebScraper;
 
 internal class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
         builder.Services.AddDbContext<WebScraperContext>();
         builder.Services.AddScoped<IWebScraperService, BasketballScraperService>();
-        builder.Services.AddScoped<DailyReportController>();
+        builder.Services.AddScoped<DailyReportJob>();
         builder.Services.AddScoped<IBasketballGameRepository, BasketballGameRepository>();
         builder.Services.AddScoped<IEmailService, BasketballEmailService>();
+        builder.Services.AddQuartz();
+        builder.Services.AddQuartzHostedService(
+            opt =>
+            {
+                opt.WaitForJobsToComplete = true;
+            });
 
         IHost app = builder.Build();
 
@@ -25,12 +32,21 @@ internal class Program
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
 
-        app.RunAsync();
+        var _job = JobBuilder.Create<DailyReportJob>()
+            .WithIdentity("DailyReportJob", "JobGroup")
+            .Build();
 
-        var _controller = app.Services.GetRequiredService<DailyReportController>();
+        var _trigger = TriggerBuilder.Create()
+            .WithIdentity("RepeatingTrigger", "TriggerGroup")
+            .WithSimpleSchedule(s => s.RepeatForever().WithIntervalInSeconds(120))
+            .Build();
 
-        _controller.ExecuteDailyReportService();
+        var _schedulerFactory = app.Services.GetRequiredService<ISchedulerFactory>();
+        var _scheduler = await _schedulerFactory.GetScheduler();
+        await _scheduler.ScheduleJob(_job, _trigger);
 
-        app.StopAsync();
+        await app.RunAsync();
+
+        await app.StopAsync();
     }
 }

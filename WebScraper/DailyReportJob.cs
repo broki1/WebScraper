@@ -1,22 +1,23 @@
-﻿using WebScraper.Data;
+﻿using Quartz;
+using WebScraper.Data;
 using WebScraper.Interfaces;
 
 namespace WebScraper;
 
-public class DailyReportController
+public class DailyReportJob : IJob
 {
     private readonly IWebScraperService _service;
     private readonly WebScraperContext _context;
     private readonly IEmailService _emailService;
 
-    public DailyReportController(IWebScraperService service, WebScraperContext context, IEmailService emailService)
+    public DailyReportJob(IWebScraperService service, WebScraperContext context, IEmailService emailService)
     {
         this._service = service;
         this._context = context;
         this._emailService = emailService;
     }
 
-    internal void ExecuteDailyReportService()
+    public async Task Execute(IJobExecutionContext context)
     {
         try
         {
